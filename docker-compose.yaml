@@ -52,6 +52,28 @@ services:
      - "15672:15672"
      - "5672:5672"
 
+  logstash-jenkins:
+    image: gerritforge/jw2017-logstash
+    networks:
+     - local-network
+    volumes:
+     - logstash-output:/var/output
+    depends_on: 
+     - jenkins
+    environment:
+     - LOGSTASH_PIPELINE=jenkins
+
+  logstash-gerrit:
+    image: gerritforge/jw2017-logstash
+    networks:
+     - local-network
+    volumes:
+     - logstash-output:/var/output
+    depends_on: 
+     - gerrit
+    environment:
+     - LOGSTASH_PIPELINE=gerrit
+
 networks:
     local-network:
         driver: bridge
@@ -61,3 +83,4 @@ volumes:
     git-volume:
     db-volume:
     index-volume:
+    logstash-output:
