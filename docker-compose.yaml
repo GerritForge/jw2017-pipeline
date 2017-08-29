@@ -2,6 +2,25 @@ version: '3'
 
 services:
 
+  jenkins:
+    image: gerritforge/jw2017-jenkins
+    environment:
+     - GIT_USER=jenkins
+     - GIT_PASSWORD=secret
+     - GIT_SERVER_URL=http://gerrit:8080/gerritforge/play-scala-chatroom-example
+     - JENKINS_URL=http://jenkins-pipeline
+     - RABBITMQ_DEFAULT_USER=user
+     - RABBITMQ_DEFAULT_PASS=password
+    volumes:
+     - jenkins-volume:/var/jenkins_home
+     - /var/run/docker.sock:/var/run/docker.sock
+    privileged: true
+    depends_on: 
+     - gerrit
+     - rabbitmq
+    networks:
+     - local-network
+
   nginx:
     image: gerritforge/jw2017-nginx
     ports:
@@ -38,6 +57,7 @@ networks:
         driver: bridge
 
 volumes:
+    jenkins-volume:
     git-volume:
     db-volume:
     index-volume:
