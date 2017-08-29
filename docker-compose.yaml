@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+
+  nginx:
+    image: gerritforge/jw2017-nginx
+    ports:
+     - "80:80"
+    networks:
+     - local-network
+
+  gerrit:
+    image: gerritforge/jw2017-gerrit
+    networks:
+     - local-network
+    depends_on:
+     - rabbitmq
+    volumes:
+     - git-volume:/var/gerrit/git
+     - db-volume:/var/gerrit/db
+     - index-volume:/var/gerrit/index
+    ports:
+     - "29418:29418"
+
+  rabbitmq:
+    image: gerritforge/jw2017-rabbitmq
+    networks:
+     - local-network
+    environment:
+     - RABBITMQ_DEFAULT_USER=user
+     - RABBITMQ_DEFAULT_PASS=password
+    ports:
+     - "15672:15672"
+     - "5672:5672"
+
+networks:
+    local-network:
+        driver: bridge
+
+volumes:
+    git-volume:
+    db-volume:
+    index-volume:
