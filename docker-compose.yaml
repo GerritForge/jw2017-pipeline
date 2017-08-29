@@ -74,6 +74,26 @@ services:
     environment:
      - LOGSTASH_PIPELINE=gerrit
 
+  spark:
+    image: gerritforge/jw2017-spark
+    entrypoint: sleep 3650d
+    volumes:
+     - logstash-output:/var/output
+    depends_on: 
+      - elasticsearch
+    networks:
+     - local-network
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.5.2
+    networks:
+     - local-network
+    environment:
+     - http.host=0.0.0.0
+     - http.publish_host=127.0.0.1
+    ports:
+     - "9200:9200"
+
 networks:
     local-network:
         driver: bridge
